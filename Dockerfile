@@ -9,6 +9,8 @@ RUN git clone https://github.com/pyload/pyload.git /tmp/pyload \
     && cd /tmp/pyload \
     && git checkout stable
 
+COPY /start.sh /
+
 EXPOSE 8000
 
 CMD ["./start.sh"]
