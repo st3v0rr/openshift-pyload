@@ -1,0 +1,38 @@
+apiVersion: image.openshift.io/v1
+kind: ImageStream
+metadata:
+  name: pyload
+
+apiVersion: v1
+data:
+  WebHookSecretKey: NTgyZWYwNzZmMjAzOTYwNg==
+kind: Secret
+metadata:
+  name: github-trigger
+type: Opaque
+
+apiVersion: build.openshift.io/v1
+kind: BuildConfig
+metadata:
+  name: pyload
+spec:
+  nodeSelector: null
+  output:
+    to:
+      kind: ImageStreamTag
+      name: 'pyload:latest'
+  postCommit: {}
+  resources: {}
+  runPolicy: Serial
+  source:
+    git:
+      uri: 'https://github.com/st3v0rr/openshift-pyload.git'
+    type: Git
+  strategy:
+    dockerStrategy: {}
+    type: Docker
+  triggers:
+    - github:
+        secretReference:
+          name: github-trigger
+      type: GitHub
