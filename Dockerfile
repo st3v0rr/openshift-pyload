@@ -10,7 +10,7 @@ RUN git clone https://github.com/pyload/pyload.git /tmp/pyload \
     && git checkout stable
 
 RUN chgrp -R 0 /tmp/pyload && \
-    chmod -Rf g+rwx /tmp/pyload
+    chmod -Rf 777 /tmp/pyload
 
 EXPOSE 8000
 
