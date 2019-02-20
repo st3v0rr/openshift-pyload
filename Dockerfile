@@ -11,4 +11,4 @@ RUN git clone https://github.com/pyload/pyload.git /tmp/pyload \
 
 EXPOSE 8000
 
-ENTRYPOINT ["/tmp/pyload/pyLoadCore.py --configdir=/tmp/pyload/conf"]
+CMD ["/tmp/pyload/pyLoadCore.py --configdir=/tmp/pyload/conf"]
