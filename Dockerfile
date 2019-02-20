@@ -10,6 +10,7 @@ RUN git clone https://github.com/pyload/pyload.git /tmp/pyload \
     && git checkout stable
 
 COPY /start.sh /
+RUN chmod +x /start.sh
 
 EXPOSE 8000
 
