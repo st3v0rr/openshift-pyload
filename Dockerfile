@@ -9,6 +9,9 @@ RUN git clone https://github.com/pyload/pyload.git /tmp/pyload \
     && cd /tmp/pyload \
     && git checkout stable
 
+RUN chgrp -R 0 /tmp/pyload && \
+    chmod -Rf g+rwx /tmp/pyload
+
 EXPOSE 8000
 
 CMD ["python", "/tmp/pyload/pyLoadCore.py"]
