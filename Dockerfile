@@ -6,8 +6,8 @@ RUN yum -y install git python python-crypto python-pycurl tesseract gjs js pytho
 RUN pip install Send2Trash
 
 RUN git clone https://github.com/pyload/pyload.git /opt/pyload
-RUN cd /opt/pyload
-RUN git checkout stable
+    && cd /opt/pyload
+    && git checkout stable
 
 EXPOSE 8000
 
