@@ -3,14 +3,6 @@ kind: ImageStream
 metadata:
   name: pyload
 
-apiVersion: v1
-data:
-  WebHookSecretKey: NTgyZWYwNzZmMjAzOTYwNg==
-kind: Secret
-metadata:
-  name: github-trigger
-type: Opaque
-
 apiVersion: build.openshift.io/v1
 kind: BuildConfig
 metadata:
@@ -31,8 +23,3 @@ spec:
   strategy:
     dockerStrategy: {}
     type: Docker
-  triggers:
-    - github:
-        secretReference:
-          name: github-trigger
-      type: GitHub
