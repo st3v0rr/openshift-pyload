@@ -14,4 +14,4 @@ RUN chgrp -R 0 /tmp/pyload && \
 
 EXPOSE 8000
 
-CMD ["python", "/tmp/pyload/pyLoadCore.py"]
+CMD ["python", "/tmp/pyload/pyLoadCore.py --configdir=.pyload"]
