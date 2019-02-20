@@ -11,4 +11,4 @@ RUN git clone https://github.com/pyload/pyload.git /tmp/pyload \
 
 EXPOSE 8000
 
-CMD ["python", "/opt/pyload/pyLoadCore.py"]
+CMD ["python", "/tmp/pyload/pyLoadCore.py"]
