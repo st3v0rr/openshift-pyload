@@ -12,8 +12,7 @@ RUN git clone https://github.com/pyload/pyload.git /opt/pyload \
 ADD initial-config /opt/pyload/pyload-initial-config
 
 COPY /start.sh /
-COPY /adduser.sh /
-RUN chmod +x /adduser.sh
+
 RUN chmod +x /start.sh
 
 EXPOSE 8000
