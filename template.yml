@@ -1,25 +1,151 @@
-apiVersion: image.openshift.io/v1
-kind: ImageStream
+apiVersion: v1
+kind: Template
 metadata:
-  name: pyload
+  name: pyload-template
+  annotations:
+    description: "Python written downloadmanager. See more details on https://pyload.net/"
+    iconClass: "icon-python"
+    tags: "downloads,manager"
 
-apiVersion: build.openshift.io/v1
-kind: BuildConfig
-metadata:
-  name: pyload
-spec:
-  nodeSelector: null
-  output:
+objects:
+- apiVersion: image.openshift.io/v1
+  kind: ImageStream
+  metadata:
+    name: pyload
+
+- apiVersion: build.openshift.io/v1
+  kind: BuildConfig
+  metadata:
+    name: pyload
+  spec:
+    nodeSelector: null
+    output:
+      to:
+        kind: ImageStreamTag
+        name: 'pyload:latest'
+    postCommit: {}
+    resources: {}
+    runPolicy: Serial
+    source:
+      git:
+        uri: 'https://github.com/st3v0rr/openshift-pyload.git'
+      type: Git
+    strategy:
+      dockerStrategy: {}
+      type: Docker
+
+- apiVersion: v1
+  kind: PersistentVolumeClaim
+  metadata:
+    name: pyload-conf
+  spec:
+    accessModes:
+      - ReadWriteOnce
+    resources:
+      requests:
+        storage: 128Mi
+
+- apiVersion: v1
+  kind: PersistentVolumeClaim
+  metadata:
+    name: pyload-downloads
+  spec:
+    accessModes:
+      - ReadWriteOnce
+    resources:
+      requests:
+        storage: 128Gi
+
+- apiVersion: v1
+  kind: Service
+  metadata:
+    name: pyload
+  spec:
+    ports:
+      - name: 8000-tcp
+        port: 8000
+        protocol: TCP
+        targetPort: 8000
+    selector:
+      deploymentconfig: pyload
+
+- apiVersion: apps.openshift.io/v1
+  kind: DeploymentConfig
+  metadata:
+    name: pyload
+  spec:
+    replicas: 1
+    selector:
+      app: pyload
+      deploymentconfig: pyload
+    strategy:
+      activeDeadlineSeconds: 21600
+      customParams: {}
+      recreateParams:
+        timeoutSeconds: 600
+      resources: {}
+      type: Recreate
+    template:
+      metadata:
+        annotations:
+          openshift.io/generated-by: OpenShiftWebConsole
+        creationTimestamp: null
+        labels:
+          app: pyload
+          deploymentconfig: pyload
+      spec:
+        containers:
+          - image:
+            imagePullPolicy: Always
+            name: pyload
+            ports:
+              - containerPort: 8000
+                protocol: TCP
+            resources: {}
+            terminationMessagePath: /dev/termination-log
+            terminationMessagePolicy: File
+            volumeMounts:
+              - mountPath: /tmp/pyload-config
+                name: pyload-conf-volume
+              - mountPath: /tmp/pyload/downloads
+                name: pyload-downloads-volume
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+        volumes:
+          - name: pyload-conf-volume
+            persistentVolumeClaim:
+              claimName: pyload-conf
+          - name: pyload-downloads-volume
+            persistentVolumeClaim:
+              claimName: pyload-downloads
+    test: false
+    triggers:
+      - imageChangeParams:
+          automatic: true
+          containerNames:
+            - pyload
+          from:
+            kind: ImageStreamTag
+            name: 'pyload:latest'
+          lastTriggeredImage:
+        type: ImageChange
+      - type: ConfigChange
+
+- apiVersion: route.openshift.io/v1
+  kind: Route
+  metadata:
+    name: pyload
+  spec:
+    port:
+      targetPort: 8000-tcp
+    tls:
+      insecureEdgeTerminationPolicy: Redirect
+      termination: edge
     to:
-      kind: ImageStreamTag
-      name: 'pyload:latest'
-  postCommit: {}
-  resources: {}
-  runPolicy: Serial
-  source:
-    git:
-      uri: 'https://github.com/st3v0rr/openshift-pyload.git'
-    type: Git
-  strategy:
-    dockerStrategy: {}
-    type: Docker
+      kind: Service
+      name: pyload
+      weight: 100
+    wildcardPolicy: None
