@@ -13,6 +13,7 @@ ADD initial-config /opt/pyload/pyload-initial-config
 
 COPY /start.sh /
 COPY /adduser.sh /
+RUN chmod +x /adduser.sh
 RUN chmod +x /start.sh
 
 EXPOSE 8000
