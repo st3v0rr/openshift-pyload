@@ -9,6 +9,8 @@ RUN git clone https://github.com/pyload/pyload.git /opt/pyload \
     && cd /opt/pyload \
     && git checkout stable
 
+ADD initial-config /opt/pyload/pyload-initial-config
+
 COPY /start.sh /
 RUN chmod +x /start.sh
 
