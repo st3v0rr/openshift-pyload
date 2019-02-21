@@ -1,3 +1,3 @@
 #!/bin/sh
 
-/tmp/pyload/pyLoadCore.py --configdir=/tmp/pyload-config/
+/opt/pyload/pyLoadCore.py --configdir=/opt/pyload-config/
